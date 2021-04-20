@@ -84,39 +84,74 @@ void loop() {
     myScreen.setFontSize(1);
     char res[10];
     int COValue = 0;
-    int dangerlvl = 100;
-
-    if (scd30.isAvailable()) {
+    int dangerlvl = 70;
+    float tempArr[10];
+    float humiArr[10];
+    float co2Arr[10];
+    float coArr[10];
+    
+    float temp = 0;
+    float humi = 0;
+    float co2 = 0;
+    float co = 0;
+    
+    for (int i=0; i < 10; i++) {
         scd30.getCarbonDioxideConcentration(result);
-        COValue = analogRead(A3);
+        tempArr[i] = result[1];
+        humiArr[i] = result[2];
+        co2Arr[i] = result[0];
+        coArr[i] = analogRead(A14); //CO reading and process analogRead needed
+        //        if (COValue > dangerlvl) { //Will add in the pin for sound element and finalize the danger level for CO alarm trigger [70ppm]
+//            analogWrite();  
+//        }
         SERIAL.print("Carbon Dioxide Concentration is: ");
         SERIAL.print(result[0]);
         SERIAL.println(" ppm");
         SERIAL.print("Carbon Monoxide Concentration is: ");
-        SERIAL.print(COValue);
+        SERIAL.print(coArr[i]);
         SERIAL.println(" ppm");
-        SERIAL.println(" ");
         SERIAL.print("Temperature = ");
         SERIAL.print(result[1]);
         SERIAL.println(" ℃");
-        SERIAL.println(" ");
         SERIAL.print("Humidity = ");
         SERIAL.print(result[2]);
         SERIAL.println(" %");
+        SERIAL.println(" ");
 
-        SERIAL.println(" ");
-        SERIAL.println(" ");
-        SERIAL.println(" ");
-//        ftoa(result[0], res, 2);
-//        String temp = "Temperature:" + res;
-        myScreen.gText(60, 40, "Temperature: " + String(result[0]) + "C");
-        myScreen.gText(60, 60, "Humidity: " + String(result[2]) + "%");
-        myScreen.gText(60, 80, "CO2: " + String(result[0]) + "ppm");
-        myScreen.gText(60, 100, "CO: " + String(COValue) + "ppm");
-        if (COValue > dangerlvl) {
-            analogWrite();  
-        }
+//        SERIAL.println(tempArr[i]);
+//        SERIAL.println(humiArr[i]);
+//        SERIAL.println(co2Arr[i]);
+        //SERIAL.println(coArr[i]);
+        delay(2500);
     }
 
-    delay(2000);
+    for (int i=0; i < 10; i++) {
+        temp += tempArr[i];
+        humi += humiArr[i];
+        co2 += co2Arr[i];
+        co += coArr[i];
+
+//        co = co/10; //process needed
+    }
+    temp = temp/10;
+    humi = humi/10;
+    co2 = co2/10;
+    co = co/10;
+//    SERIAL.println(temp);
+//    SERIAL.println(humi);
+//    SERIAL.println(co2);
+    // String processing for readings, resolutions etc.
+
+    //push button between temperature units 
+
+//    myScreen.setFontSolid(false);
+//    myScreen.setFontSize(1);
+    myScreen.gText(60, 40, "Temperature: " + String(temp) + " C");
+    myScreen.gText(60, 60, "Humidity: " + String(humi) + " %");
+    myScreen.gText(60, 80, "CO2: " + String(co2) + " ppm");
+    myScreen.gText(60, 100, "CO: " + String(co) + " ppm");
+    
+    delay(5000);
+    myScreen.clear();
+
 }
