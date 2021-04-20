@@ -83,10 +83,17 @@ void loop() {
     myScreen.setFontSolid(false);
     myScreen.setFontSize(1);
     char res[10];
+    int COValue = 0;
+    int dangerlvl = 100;
+
     if (scd30.isAvailable()) {
         scd30.getCarbonDioxideConcentration(result);
+        COValue = analogRead(A3);
         SERIAL.print("Carbon Dioxide Concentration is: ");
         SERIAL.print(result[0]);
+        SERIAL.println(" ppm");
+        SERIAL.print("Carbon Monoxide Concentration is: ");
+        SERIAL.print(COValue);
         SERIAL.println(" ppm");
         SERIAL.println(" ");
         SERIAL.print("Temperature = ");
@@ -96,15 +103,19 @@ void loop() {
         SERIAL.print("Humidity = ");
         SERIAL.print(result[2]);
         SERIAL.println(" %");
+
         SERIAL.println(" ");
         SERIAL.println(" ");
         SERIAL.println(" ");
 //        ftoa(result[0], res, 2);
 //        String temp = "Temperature:" + res;
-        myScreen.gText(60, 40, "Temperature:" + String(result[0]));
-        myScreen.gText(60, 60, "Humidity:   %");
-        myScreen.gText(60, 80, "CO2: ");
-        myScreen.gText(60, 100, "CO: ");
+        myScreen.gText(60, 40, "Temperature: " + String(result[0]) + "C");
+        myScreen.gText(60, 60, "Humidity: " + String(result[2]) + "%");
+        myScreen.gText(60, 80, "CO2: " + String(result[0]) + "ppm");
+        myScreen.gText(60, 100, "CO: " + String(COValue) + "ppm");
+        if (COValue > dangerlvl) {
+            analogWrite();  
+        }
     }
 
     delay(2000);
