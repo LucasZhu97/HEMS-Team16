@@ -31,7 +31,7 @@ Screen_K35_SPI myScreen;
     #define SERIAL Serial
 #endif
 uint16_t colours[16];
-
+unsigned long start;
 
 void setup() {
 
@@ -70,9 +70,9 @@ void setup() {
     colours[14] = myScreen.calculateColour(255, 255,   0);
     colours[15] = myScreen.calculateColour(255, 255, 255);
     myScreen.setFontSolid(false);
-    myScreen.setFontSize(1);
+    myScreen.setFontSize(myScreen.fontMax());
     myScreen.gText(60, 40, "Temperature: ");
-    myScreen.gText(60, 60, "Humidity:   %");
+    myScreen.gText(60, 60, "Humidity: ");
     myScreen.gText(60, 80, "CO2: ");
     myScreen.gText(60, 100, "CO: ");
 }
@@ -94,8 +94,10 @@ void loop() {
     float humi = 0;
     float co2 = 0;
     float co = 0;
+
     
     for (int i=0; i < 10; i++) {
+//        SERIAL.println("Program running: "+String(time/1000)+ " seconds.");
         scd30.getCarbonDioxideConcentration(result);
         tempArr[i] = result[1];
         humiArr[i] = result[2];
@@ -124,6 +126,8 @@ void loop() {
         //SERIAL.println(coArr[i]);
         delay(2500);
     }
+    unsigned long time = millis();
+
 
     for (int i=0; i < 10; i++) {
         temp += tempArr[i];
@@ -146,12 +150,15 @@ void loop() {
 
 //    myScreen.setFontSolid(false);
 //    myScreen.setFontSize(1);
+    myScreen.setFontSize(myScreen.fontMax());
     myScreen.gText(60, 40, "Temperature: " + String(temp) + " C");
     myScreen.gText(60, 60, "Humidity: " + String(humi) + " %");
     myScreen.gText(60, 80, "CO2: " + String(co2) + " ppm");
     myScreen.gText(60, 100, "CO: " + String(co) + " ppm");
+    myScreen.gText(60, 120, "Time since last update: " + String((time-start)/1000) + " seconds.");
     
-    delay(5000);
+    delay(275000);
+    start = time;
     myScreen.clear();
 
 }
