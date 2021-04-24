@@ -103,8 +103,10 @@ void loop() {
         humiArr[i] = result[2];
         co2Arr[i] = result[0];
         coArr[i] = analogRead(A14); //CO reading and process analogRead needed
-        //        if (COValue > dangerlvl) { //Will add in the pin for sound element and finalize the danger level for CO alarm trigger [70ppm]
-//            analogWrite();  
+        //Will add in the pin for sound element and finalize the danger level for CO alarm trigger [70ppm]
+        //Pin map https://energia.nu/pinmaps/msp-exp432p401r/
+//        if (COValue > dangerlvl) { 
+//            digitalWrite(P3_7, HIGH);  //if not work, try digitalWrite(31, HIGH);
 //        }
         SERIAL.print("Carbon Dioxide Concentration is: ");
         SERIAL.print(result[0]);
@@ -120,10 +122,6 @@ void loop() {
         SERIAL.println(" %");
         SERIAL.println(" ");
 
-//        SERIAL.println(tempArr[i]);
-//        SERIAL.println(humiArr[i]);
-//        SERIAL.println(co2Arr[i]);
-        //SERIAL.println(coArr[i]);
         delay(2500);
     }
     unsigned long time = millis();
@@ -134,22 +132,13 @@ void loop() {
         humi += humiArr[i];
         co2 += co2Arr[i];
         co += coArr[i];
-
-//        co = co/10; //process needed
     }
+    
     temp = temp/10;
     humi = humi/10;
     co2 = co2/10;
     co = co/10;
-//    SERIAL.println(temp);
-//    SERIAL.println(humi);
-//    SERIAL.println(co2);
-    // String processing for readings, resolutions etc.
 
-    //push button between temperature units 
-
-//    myScreen.setFontSolid(false);
-//    myScreen.setFontSize(1);
     myScreen.setFontSize(myScreen.fontMax());
     myScreen.gText(60, 40, "Temperature: " + String(temp) + " C");
     myScreen.gText(60, 60, "Humidity: " + String(humi) + " %");
