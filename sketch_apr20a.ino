@@ -105,9 +105,9 @@ void loop() {
         coArr[i] = analogRead(A14); //CO reading and process analogRead needed
         //Will add in the pin for sound element and finalize the danger level for CO alarm trigger [70ppm]
         //Pin map https://energia.nu/pinmaps/msp-exp432p401r/
-//        if (COValue > dangerlvl) { 
-//            digitalWrite(P3_7, HIGH);  //if not work, try digitalWrite(31, HIGH);
-//        }
+       if (COValue > dangerlvl) { 
+           digitalWrite(P3_7, HIGH);  //if not work, try digitalWrite(31, HIGH);
+       }
         SERIAL.print("Carbon Dioxide Concentration is: ");
         SERIAL.print(result[0]);
         SERIAL.println(" ppm");
